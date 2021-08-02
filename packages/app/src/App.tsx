@@ -40,7 +40,7 @@ const App: React.FC = () => {
           value={{ AuthStatus: isLoggedIn, SignIn: signIn, SignOut: signOut }}
         >
           <Overlay>
-            {!isLoggedIn ? (
+            {isLoggedIn ? (
               <Switch>
                 <Route path="/" component={IndexPage} />
               </Switch>

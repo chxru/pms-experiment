@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import { join } from "path";
 import { URL } from "url";
+import ipcHandler from "./ipc/ipc";
 
 const isSingleInstance = app.requestSingleInstanceLock();
 
@@ -51,6 +52,9 @@ const createWindow = async () => {
    * @see https://github.com/electron/electron/issues/25012
    */
   mainWindow.on("ready-to-show", () => {
+    // execute ipc handler
+    ipcHandler();
+
     mainWindow?.show();
 
     if (env.MODE === "development") {
@@ -68,11 +72,11 @@ const createWindow = async () => {
       ? env.VITE_DEV_SERVER_URL
       : new URL(
           "../renderer/dist/index.html",
-          "file://" + __dirname,
+          "file://" + __dirname
         ).toString();
 
   await mainWindow.loadURL(
-    pageUrl?.toString() || "../renderer/dist/index.html",
+    pageUrl?.toString() || "../renderer/dist/index.html"
   );
 };
 

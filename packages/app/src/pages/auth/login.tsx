@@ -13,10 +13,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-// import { ipcRenderer } from "electron";
 
-// import AuthContext from "../../contexts/auth";
-// import NotifyContext from "../../contexts/notify";
+import AuthContext from "../../contexts/auth";
+import NotifyContext from "../../contexts/notify";
 
 interface LoginForm {
   username: string;
@@ -24,8 +23,8 @@ interface LoginForm {
 }
 
 const LoginPage: React.FC = () => {
-  // const auth = useContext(AuthContext);
-  // const notify = useContext(NotifyContext);
+  const auth = useContext(AuthContext);
+  const notify = useContext(NotifyContext);
 
   const {
     handleSubmit,
@@ -34,23 +33,21 @@ const LoginPage: React.FC = () => {
   } = useForm<LoginForm>();
 
   // form submit
-  const onSubmit = (values: LoginForm) => {
-    // ipcRenderer.send("check-uname-pwd", values);
-    // ipcRenderer.once(
-    //   "check-uname-pwd-res",
-    //   (_, args: { res: boolean; error?: string }) => {
-    //     if (args.res) {
-    //       auth.SignIn();
-    //       notify.NewAlert({ msg: "User authenticated", status: "success" });
-    //     } else {
-    //       notify.NewAlert({
-    //         msg: "User authentication failed",
-    //         status: "error",
-    //         description: args.error,
-    //       });
-    //     }
-    //   }
-    // );
+  const onSubmit = async (values: LoginForm) => {
+    window.auth.login(values).then(({ err }) => {
+      if (err) {
+        notify.NewAlert({
+          msg: "Login Failed",
+          description: err.name,
+          status: "error",
+        });
+      } else {
+        notify.NewAlert({
+          msg: "Login Success",
+          status: "success",
+        });
+      }
+    });
   };
 
   return (
